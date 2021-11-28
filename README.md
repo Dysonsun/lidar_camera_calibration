@@ -34,21 +34,27 @@ rosrun lidar_camera_calibration calibrate_camera_lidar_main.py --calibrate \
     按回车【ENTER】或自动等待30秒，退出显示界面
 
    - 自动寻找角点不成功：
+  
     <center>
 
      <img src="./image/corner_unsuccessed.png" alt="result" width="60%" height="50%" align="result" />
     </center>
+
     点击鼠标左键，框选整个棋盘格，然后按回车【ENTER】，此时算法会在框选的区域自动寻找棋盘格角点，如果还是找不到角点，则回到步骤2。
 
    - 自动寻找角点还是不成功，需要手动选取角点
+
     手动点击鼠标左键，选取棋盘格上的点，顺序为：左上、右上、右下、左下。选取了四个点，按下【Y】键确认，如果选取错误，则按下【S】或者【Q】退出选取。
 
 
    - 角点寻找错误：
+  
     当发现棋盘格角点检测错误时，应该按下【Q】舍弃这一帧的数据，同时回到步骤2.
 
 3. 选取点云平面
+   
     - 按下【CTRL】键的同时点击鼠标左键选定标定板区域，按下回车【ENTER】
+
    <center>
 
     <img src="./image/select_points.png" alt="result" width="60%" height="50%" align="result" />
