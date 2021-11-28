@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+    <arg name="camera" default="/rgb_left" />
+
+    <!-- Play rosbag record -->
+    <include file="$(find lidar_camera_calibration)/launch/play_rosbag.launch">
+        <arg name="bagfile" value="/home/sunsky/dataset/Tang/0718/left_camera_lidar_calib_updated.bag" />
+    </include>
+
+    <!-- Nodelet manager for this pipeline -->
+    <node
+        pkg="nodelet"
+        type="nodelet"
+        args="manager"
+        name="lidar_camera_manager"
+        output="screen" />
+
+    <node
+        pkg="image_proc"
+        type="image_proc" 
+        name="image_proc_node1" />
+
+    <!-- Run image_proc/rectify nodelet -->
+    <node
+        pkg="nodelet"
+        type="nodelet"
+        name="rectify_color"
+        args="load image_proc/rectify lidar_camera_manager --no-bond" >
+        
+        <!-- Remap input topics -->
+        <remap from="image_mono" to="$(arg camera)/image_raw" />
+        <remap from="camera_info" to="$(arg camera)/camera_info" />
+
+        <!-- Remap output topics -->
+        <remap from="image_rect" to="$(arg camera)/image_rect_color" />
+    </node>
+
+    <!-- Wire static transform from the world to velodyne frame -->
+    <node
+        pkg="tf2_ros"
+        type="static_transform_publisher"
+        name="world_velodyne_tf"
+        output="screen"
+        args="1.91894231 -3.4691694 1.48545919 -2.9927055380287335 0.3918094160817871 2.4205353318301626 world vehicle_frame" />
+
+    <!-- Setup params for Camera-LiDAR calibration script -->
+    <param name="camera_info_topic" type="str" value="$(arg camera)/camera_info" />
+    <param name="image_color_topic" type="str" value="$(arg camera)/image_raw" />
+    <param name="lidar_points_topic" type="str" value="lidar_cloud_calibrated" />
+    <param name="camera_lidar_topic" type="str" value="$(arg camera)/camera_lidar" />
+    <param name="project_mode" type="bool" value="true" />
+
+    <!-- Run Camera-LiDAR projection script -->
+    <node   
+        pkg="lidar_camera_calibration"
+        type="calibrate_camera_lidar.py"
+        name="calibrate_camera_lidar"
+        output="screen" />
+
+    <!-- Run image view to display the projected points image -->
+    <node 
+        name="camera_lidar_projection" 
+        pkg="image_view"
+        type="image_view"
+        respawn="false"
+        output="screen">
+        
+        <!-- Remap input topics -->
+        <remap from="image" to="$(arg camera)/camera_lidar" />
+    </node>
+
+</launch>

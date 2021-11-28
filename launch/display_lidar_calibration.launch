@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+    <!-- Play rosbag record -->
+    <!-- <include file="$(find lidar_camera_calibration)/launch/play_rosbag.launch"> -->
+        <!-- <arg name="bagfile" value="/home/sunsky/dataset/calibration/200718/single_lidar_simulation.bag" /> -->
+        <!-- <arg name="bagfile" value="/media/sunsky/Windows/Users/sunsky/dataset/Tang/200718/left_camera_lidar.bag" /> -->
+    <!-- </include> -->
+
+    <!-- Nodelet manager for this pipeline -->
+    <node
+        pkg="nodelet"
+        type="nodelet"
+        args="manager"
+        name="lidar_camera_manager"
+        output="screen" />
+
+
+    <!-- Wire static transform from the world to velodyne frame -->
+    <node
+        pkg="tf2_ros"
+        type="static_transform_publisher"
+        name="world_velodyne_tf"
+        output="screen"
+        args="0 0 -0.01680727 1.563605810479904e-05 0.004655663197428049 0.006716968307505432 world vehicle_frame" />
+
+    <!-- Setup params for Camera-LiDAR calibration script -->
+    <param name="lidar_points_topic" type="str" value="lidar_cloud_calibrated" />
+    <param name="project_mode" type="bool" value="true" />
+
+    <!-- Run Camera-LiDAR projection script -->
+    <node   
+        pkg="lidar_camera_calibration"
+        type="calibrate_lidar.py"
+        name="calibrate_lidar"
+        args="--project_mode"
+        output="screen" />
+
+
+</launch>

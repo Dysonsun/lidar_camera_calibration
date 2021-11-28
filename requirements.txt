@@ -1,0 +1,12 @@
+python-pcl
+pptk
+scikit-learn
+opencv-python==4.1.0.25
+matplotlib
+scipy
+numpy
+glob2 #如果用python3的话就写成glob3
+PyYAML>=5.3.1
+roslib
+rospy
+sensor_msgs
