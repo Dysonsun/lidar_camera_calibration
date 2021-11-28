@@ -5,7 +5,7 @@ Partially borrowed from [heethesh/lidar_camera_calibration](https://github.com/h
 ## 一、安装及编译:
 ```
 # cd to the source directory of a catkin workspace
-git clone https://github.com/sunskyhsh/lidar_camera_calibration.git
+git clone https://github.com/Dysonsun/lidar_camera_calibration.git
 pip install -r lidar_camera_calibration/requirements.txt
 cd ..
 catkin build
